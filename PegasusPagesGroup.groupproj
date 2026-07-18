@@ -1,0 +1,60 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{2296793D-6BE7-471D-926E-6F947A28444A}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="PegasusPages.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="samples\horse\SampleHorse.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="tests\PegasusPagesTest.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="PegasusPages">
+        <MSBuild Projects="PegasusPages.dproj"/>
+    </Target>
+    <Target Name="PegasusPages:Clean">
+        <MSBuild Projects="PegasusPages.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="PegasusPages:Make">
+        <MSBuild Projects="PegasusPages.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="SampleHorse">
+        <MSBuild Projects="samples\horse\SampleHorse.dproj"/>
+    </Target>
+    <Target Name="SampleHorse:Clean">
+        <MSBuild Projects="samples\horse\SampleHorse.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="SampleHorse:Make">
+        <MSBuild Projects="samples\horse\SampleHorse.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="PegasusPagesTest">
+        <MSBuild Projects="tests\PegasusPagesTest.dproj"/>
+    </Target>
+    <Target Name="PegasusPagesTest:Clean">
+        <MSBuild Projects="tests\PegasusPagesTest.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="PegasusPagesTest:Make">
+        <MSBuild Projects="tests\PegasusPagesTest.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="PegasusPages;SampleHorse;PegasusPagesTest"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="PegasusPages:Clean;SampleHorse:Clean;PegasusPagesTest:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="PegasusPages:Make;SampleHorse:Make;PegasusPagesTest:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
