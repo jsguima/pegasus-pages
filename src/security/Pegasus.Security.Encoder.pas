@@ -43,8 +43,11 @@ begin
     .Replace('\', '\\')
     .Replace('''', '\''')
     .Replace('"', '\"')
+    .Replace('`', '\`')
     .Replace(#10, '\n')
     .Replace(#13, '\r')
+    .Replace(#$2028, '\u2028')
+    .Replace(#$2029, '\u2029')
     .Replace('</', '<\/');
 end;
 

@@ -13,7 +13,7 @@ uses
   Pegasus.Http.Page,
   Pegasus.Http.Request,
   Pegasus.Http.PageResult,
-  Pegasus.Adapters.Horse in 'Pegasus.Adapters.Horse.pas',
+  Pegasus.Adapters.Horse in 'src\adapter\Pegasus.Adapters.Horse.pas',
   Page.Home in 'src\pages\Page.Home.pas';
 
 procedure Start;
