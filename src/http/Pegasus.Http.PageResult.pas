@@ -59,7 +59,7 @@ type
   TPageResultBuilder = class(TInterfacedObject, IPageResultBuilder)
   private
     FData: IPageDataWriter;
-    [weak] FPageResult: IPageResult;
+    FPageResultPtr: Pointer;
     constructor Create(Data: IPageDataWriter; const PageResult: IPageResult); reintroduce;
   public
     function Add(const Key: string; const Value: string): IPageResultBuilder; overload;
@@ -143,7 +143,7 @@ constructor TPageResultBuilder.Create(Data: IPageDataWriter; const PageResult: I
 begin
   inherited Create;
   FData := Data;
-  FPageResult := PageResult;
+  FPageResultPtr := Pointer(PageResult);
 end;
 
 function TPageResultBuilder.Add(const Key: string; Value: Double): IPageResultBuilder;
@@ -184,13 +184,13 @@ end;
 
 function TPageResultBuilder.Render: IPageResult;
 begin
-  Result := FPageResult;
+  Result := IPageResult(FPageResultPtr);
 end;
 
 function TPageResultBuilder.SetStream(AStream: TStream; const ContentType, FileName: string): IPageResult;
 begin
   FData.SetStream(AStream, ContentType, FileName);
-  Result := FPageResult;
+  Result := IPageResult(FPageResultPtr);
 end;
 
 end.

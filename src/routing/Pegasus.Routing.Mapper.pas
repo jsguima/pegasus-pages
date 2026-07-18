@@ -60,14 +60,31 @@ begin
 
   {$IFDEF DEBUG}
   var ExePath := ExtractFilePath(ParamStr(0));
-  var ProjectRoot := TPath.GetFullPath(TPath.Combine(ExePath, '..\..'));
-  var DevPath := TPath.Combine(ProjectRoot, 'pages');
+  var SearchDir := ExcludeTrailingPathDelimiter(TPath.GetFullPath(ExePath));
 
-  if TDirectory.Exists(DevPath) then
-    Exit(DevPath);
+  for var I := 1 to 6 do
+  begin
+    SearchDir := TPath.GetDirectoryName(SearchDir);
+
+    if SearchDir = '' then
+      Break;
+
+    var Candidate: string;
+
+    if AOverride <> '' then
+      Candidate := TPath.Combine(SearchDir, AOverride)
+    else
+      Candidate := TPath.Combine(SearchDir, 'pages');
+
+    if TDirectory.Exists(Candidate) then
+      Exit(TPath.GetFullPath(Candidate));
+  end;
   {$ENDIF}
 
-  Result := TPath.Combine(ExtractFilePath(ParamStr(0)), 'pages');
+  if AOverride <> '' then
+    Result := TPath.GetFullPath(AOverride)
+  else
+    Result := TPath.Combine(ExtractFilePath(ParamStr(0)), 'pages');
 end;
 
 procedure TMapper.MapPages(const AContentRoot: string; Callback: TRouteCallback);
@@ -137,7 +154,7 @@ begin
   end;
 end;
 
-procedure ApplyPageResult(PR: TPageResult; Res: IResponse;
+procedure ApplyPageResult(PR: TPageResult; Req: IRequest; Res: IResponse;
   const TemplatePath: string; const Layouts: TArray<string>);
 begin
   case PR.Kind of
@@ -172,9 +189,15 @@ begin
         var Nodes := Builder.Build(TemplatePath);
         var Html := Renderer.Render(Nodes, PR.Data);
 
-        for var Layout in Layouts do
+        var IsHtmx := Req.GetHeader('HX-Request') = 'true';
+        var LayoutCount := Length(Layouts);
+
+        if IsHtmx and (LayoutCount > 0) then
+          Dec(LayoutCount);
+
+        for var I := 0 to LayoutCount - 1 do
         begin
-          var LayoutNodes := Builder.Build(Layout);
+          var LayoutNodes := Builder.Build(Layouts[I]);
           var LayoutData := PageData();
           LayoutData.Writer.SetSlot(Html, True);
           Html := Renderer.Render(LayoutNodes, LayoutData.Reader);
@@ -244,7 +267,7 @@ begin
         Exit;
       end;
 
-      ApplyPageResult(PageResult as TPageResult, Res, TemplatePath, Layouts);
+      ApplyPageResult(PageResult as TPageResult, Req, Res, TemplatePath, Layouts);
     end;
 
     RunPipeline(Req, Res, CoreAction);

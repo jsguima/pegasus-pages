@@ -31,17 +31,20 @@ uses
   Pegasus.Security.SecureRandom;
 
 function ConstantTimeEquals(const A, B: string): Boolean;
-var
-  Diff: Integer;
-  I: Integer;
 begin
-  if Length(A) <> Length(B) then
-    Exit(False);
+  var Diff := Length(A) xor Length(B);
+  var MaxLen := Length(A);
 
-  Diff := 0;
+  if Length(B) > MaxLen then
+    MaxLen := Length(B);
 
-  for I := 1 to Length(A) do
-    Diff := Diff or (Ord(A[I]) xor Ord(B[I]));
+  for var I := 1 to MaxLen do
+  begin
+    if (I <= Length(A)) and (I <= Length(B)) then
+      Diff := Diff or (Ord(A[I]) xor Ord(B[I]))
+    else
+      Diff := Diff or 1;
+  end;
 
   Result := Diff = 0;
 end;

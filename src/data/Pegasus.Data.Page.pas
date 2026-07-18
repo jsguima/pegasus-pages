@@ -150,22 +150,30 @@ end;
 
 procedure TPageData.Add(const Key: string; const Value: string);
 begin
-  FValues.AddOrSetValue(NormalizeKey(Key), TValue.From<string>(Value));
+  var NKey := NormalizeKey(Key);
+  FreeExistingObject(NKey);
+  FValues.AddOrSetValue(NKey, TValue.From<string>(Value));
 end;
 
 procedure TPageData.Add(const Key: string; Value: Integer);
 begin
-  FValues.AddOrSetValue(NormalizeKey(Key), TValue.From<Integer>(Value));
+  var NKey := NormalizeKey(Key);
+  FreeExistingObject(NKey);
+  FValues.AddOrSetValue(NKey, TValue.From<Integer>(Value));
 end;
 
 procedure TPageData.Add(const Key: string; Value: Double);
 begin
-  FValues.AddOrSetValue(NormalizeKey(Key), TValue.From<Double>(Value));
+  var NKey := NormalizeKey(Key);
+  FreeExistingObject(NKey);
+  FValues.AddOrSetValue(NKey, TValue.From<Double>(Value));
 end;
 
 procedure TPageData.Add(const Key: string; Value: Boolean);
 begin
-  FValues.AddOrSetValue(NormalizeKey(Key), TValue.From<Boolean>(Value));
+  var NKey := NormalizeKey(Key);
+  FreeExistingObject(NKey);
+  FValues.AddOrSetValue(NKey, TValue.From<Boolean>(Value));
 end;
 
 procedure TPageData.Add(const Key: string; Value: TObject);

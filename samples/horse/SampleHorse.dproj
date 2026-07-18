@@ -44,7 +44,7 @@
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
         <Icon_MainIcon>$(BDS)\bin\delphi_PROJECTICON.ico</Icon_MainIcon>
         <Icns_MainIcns>$(BDS)\bin\delphi_PROJECTICNS.icns</Icns_MainIcns>
-        <DCC_UnitSearchPath>..\..\src\pegasus;..\..\src\pegasus\http;..\..\src\pegasus\engine;..\..\src\pegasus\ui;..\..\src\pegasus\routing;..\..\src\pegasus\security;..\..\src\pegasus\data;modules\.dcp;..\modules\.dcp;modules\.dcu;..\modules\.dcu;modules;..\modules;modules\horse\src;..\modules\horse\src;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_UnitSearchPath>..\..\src;..\..\src\http;..\..\src\engine;..\..\src\ui;..\..\src\routing;..\..\src\security;..\..\src\data;modules\.dcp;..\modules\.dcp;modules\.dcu;..\modules\.dcu;modules;..\modules;modules\horse\src;..\modules\horse\src;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
         <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
@@ -69,7 +69,7 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="Pegasus.Adapters.Horse.pas"/>
+        <DCCReference Include="src\adapter\Pegasus.Adapters.Horse.pas"/>
         <DCCReference Include="src\pages\Page.Home.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
