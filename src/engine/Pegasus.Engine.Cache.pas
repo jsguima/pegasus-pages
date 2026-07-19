@@ -3,9 +3,7 @@
 interface
 
 uses
-  Pegasus.Engine.Nodes,
-  System.Generics.Collections,
-  System.SyncObjs;
+  Pegasus.Engine.Nodes;
 
 type
   TNodeListFactory = reference to function: INodeListOwner;
@@ -18,16 +16,6 @@ type
     property Nodes: INodeListReader read GetNodesReader;
   end;
 
-  TCacheEntry = class(TInterfacedObject, ICacheEntry)
-  private
-    FNodes: INodeListOwner;
-    FLastModified: TDateTime;
-    function GetLastModified: TDateTime;
-    function GetNodesReader: INodeListReader;
-  public
-    constructor Create(Nodes: INodeListOwner; LastModified: TDateTime);
-  end;
-
   ICache = interface
   ['{CA645B03-995F-4426-B768-B8386B73476D}']
     function GetOrAdd(const FilePath: string; Factory: TNodeListFactory): INodeListReader;
@@ -36,6 +24,27 @@ type
     procedure Configure(Production: Boolean);
     procedure Invalidate(const Key: string);
     procedure Store(const Key: string; Nodes: INodeListOwner; LastModified: TDateTime);
+  end;
+
+  function Cache: ICache;
+
+implementation
+
+uses
+  System.SysUtils,
+  System.IOUtils,
+  System.Generics.Collections,
+  System.SyncObjs;
+
+type
+  TCacheEntry = class(TInterfacedObject, ICacheEntry)
+  private
+    FNodes: INodeListOwner;
+    FLastModified: TDateTime;
+    function GetLastModified: TDateTime;
+    function GetNodesReader: INodeListReader;
+  public
+    constructor Create(Nodes: INodeListOwner; LastModified: TDateTime);
   end;
 
   TCache = class(TInterfacedObject, ICache)
@@ -58,18 +67,10 @@ type
     procedure Store(const Key: string; Nodes: INodeListOwner; LastModified: TDateTime);
   end;
 
-  function Cache: ICache;
-
-implementation
-
-uses
-  System.SysUtils,
-  System.IOUtils;
-
 var
   _CacheInstance: ICache;
 
-{ Cache — inicializado na initialization, sem lock por acesso }
+{ Public accessor }
 
 function Cache: ICache;
 begin

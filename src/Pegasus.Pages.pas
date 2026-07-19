@@ -4,7 +4,7 @@ interface
 
 uses
   Pegasus.Http.Callback,
-  Pegasus.Routing.Mapper;
+  Pegasus.Http.Middleware;
 
 type
   IPegasusPages = interface
@@ -13,34 +13,48 @@ type
     function MapPages(Callback: TRouteCallback): IPegasusPages;
     function MapStatic(Callback: TStaticCallback): IPegasusPages;
     function UseComponentPrefix(const Prefixes: array of string): IPegasusPages;
+    function UseMiddleware(Middleware: TMiddleware): IPegasusPages;
   end;
 
-  TPegasusPages = class(TInterfacedObject, IPegasusPages)
-  private
-    FContentRoot: string;
-  public
-    class function New(): IPegasusPages;
-    function ContentRoot(const APath: string): IPegasusPages;
-    function MapPages(Callback: TRouteCallback): IPegasusPages;
-    function MapStatic(Callback: TStaticCallback): IPegasusPages;
-    function UseComponentPrefix(const Prefixes: array of string): IPegasusPages;
-  end;
+  function PegasusPages(): IPegasusPages;
 
 implementation
 
 uses
+  Pegasus.Routing.Mapper,
   Pegasus.UI.Components;
 
-{ TPegasusPages }
+type
+  TPegasusPages = class(TInterfacedObject, IPegasusPages)
+  private
+    FContentRoot: string;
+    FMiddlewares: TArray<TMiddleware>;
+  public
+    function ContentRoot(const APath: string): IPegasusPages;
+    function MapPages(Callback: TRouteCallback): IPegasusPages;
+    function MapStatic(Callback: TStaticCallback): IPegasusPages;
+    function UseComponentPrefix(const Prefixes: array of string): IPegasusPages;
+    function UseMiddleware(Middleware: TMiddleware): IPegasusPages;
+  end;
 
-class function TPegasusPages.New: IPegasusPages;
+{ Public accessor }
+
+function PegasusPages(): IPegasusPages;
 begin
   Result := TPegasusPages.Create;
 end;
 
+{ TPegasusPages }
+
 function TPegasusPages.ContentRoot(const APath: string): IPegasusPages;
 begin
   FContentRoot := APath;
+  Result := Self;
+end;
+
+function TPegasusPages.UseMiddleware(Middleware: TMiddleware): IPegasusPages;
+begin
+  FMiddlewares := FMiddlewares + [Middleware];
   Result := Self;
 end;
 
@@ -58,7 +72,7 @@ end;
 
 function TPegasusPages.MapPages(Callback: TRouteCallback): IPegasusPages;
 begin
-  Mapper.MapPages(FContentRoot, Callback);
+  Mapper.MapPages(FContentRoot, FMiddlewares, Callback);
   Result := Self;
 end;
 

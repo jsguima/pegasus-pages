@@ -167,7 +167,7 @@ end;
 function TLexer.MakeToken(Kind: TTokenKind; const Value: string; Line, Col: Integer): TToken;
 begin
   Result.Kind := Kind;
-  Result.Value := Value.Trim;
+  Result.Value := Value;
   Result.Line := Line;
   Result.Col := Col;
 end;
@@ -258,7 +258,7 @@ begin
     Advance;
   end;
 
-  var Text := Copy(FSource, Start, FPos - Start);
+  var Text := Copy(FSource, Start, FPos - Start).Trim;
 
   Result := MakeToken(tkText, Text, Line, Col);
 end;

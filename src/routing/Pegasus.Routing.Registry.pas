@@ -4,10 +4,7 @@ interface
 
 uses
   Pegasus.Http.Page,
-  System.Generics.Collections,
-  System.SyncObjs,
-  System.SysUtils,
-  System.Rtti;
+  System.SysUtils;
 
 type
   EPageWithStateNotAllowed = class(Exception);
@@ -18,6 +15,16 @@ type
     procedure Add(const Route: string; Page: IPage);
   end;
 
+  function PageRegistry(): IPageRegistry;
+
+implementation
+
+uses
+  System.Generics.Collections,
+  System.SyncObjs,
+  System.Rtti;
+
+type
   TPageRegistry = class(TInterfacedObject, IPageRegistry)
   private
     FPages: TDictionary<string, IPage>;
@@ -33,17 +40,12 @@ type
 var
   _PageRegistryInstance: IPageRegistry;
 
-  function PageRegistry(): IPageRegistry;
-
-implementation
-
-{ PageRegistry }
+{ Public accessor }
 
 function PageRegistry(): IPageRegistry;
 begin
   Result := _PageRegistryInstance;
 end;
-
 
 { TPageRegistry }
 

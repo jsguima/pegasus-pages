@@ -1,4 +1,4 @@
-program SampleHorse;
+﻿program SampleHorse;
 
 {$APPTYPE CONSOLE}
 
@@ -6,6 +6,7 @@ program SampleHorse;
 
 uses
   System.SysUtils,
+  System.IOUtils,
   Horse,
   Horse.Callback,
   Pegasus.Pages,
@@ -13,14 +14,32 @@ uses
   Pegasus.Http.Page,
   Pegasus.Http.Request,
   Pegasus.Http.PageResult,
+  Pegasus.Http.Middleware,
   Pegasus.Adapters.Horse in 'src\adapter\Pegasus.Adapters.Horse.pas',
-  Page.Home in 'src\pages\Page.Home.pas';
+  Page.Home in 'src\pages\Page.Home.pas',
+  Page.About in 'src\pages\about\Page.About.pas',
+  Page.Contact in 'src\pages\contact\Page.Contact.pas';
 
 procedure Start;
 begin
-  TPegasusPages
-    .New()
+  PegasusPages()
     .ContentRoot('src\pages')
+    .UseMiddleware(TMiddlewares.SecureHeaders(nil, ['https://cdn.jsdelivr.net']))
+    .UseMiddleware(TMiddlewares.Csrf())
+    .UseMiddleware(TMiddlewares.Timeout())
+    .MapStatic(
+      procedure(const Route, FilePath, ContentType: string)
+      begin
+        Writeln('Static: ', Route, ' -> ', FilePath);
+        THorse.Get(Route,
+          procedure(Req: THorseRequest; Res: THorseResponse)
+          begin
+            Res.RawWebResponse.ContentType := ContentType;
+            Res.Send(TFile.ReadAllText(FilePath, TEncoding.UTF8));
+          end
+        );
+      end
+    )
     .MapPages(
       procedure(Verb: TPageVerb; const Route: string; Handler: THandler)
       begin
@@ -58,6 +77,10 @@ begin
     Start;
   except
     on E: Exception do
+    begin
       Writeln(E.ClassName, ': ', E.Message);
+      Writeln('Press ENTER to exit...');
+      ReadLn;
+    end;
   end;
 end.
