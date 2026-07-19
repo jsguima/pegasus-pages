@@ -1,0 +1,22 @@
+<section class="page-section">
+  <span class="badge">Contact</span>
+  <h2>Get in touch</h2>
+  <p>Have questions or feedback? Drop us a message.</p>
+</section>
+
+<form class="form" method="post" action="/contact">
+  <input type="hidden" name="_csrf" value="{{csrf}}">
+  <div class="form-group">
+    <label for="name">Name</label>
+    <input type="text" id="name" name="name" placeholder="Your name" required>
+  </div>
+  <div class="form-group">
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" placeholder="you@example.com" required>
+  </div>
+  <div class="form-group">
+    <label for="message">Message</label>
+    <textarea id="message" name="message" placeholder="What's on your mind?" required></textarea>
+  </div>
+  <button type="submit" class="btn">Send Message</button>
+</form>

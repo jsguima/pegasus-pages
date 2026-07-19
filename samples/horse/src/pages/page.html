@@ -1,11 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>{{title}}</title>
-</head>
-<body>
-  <h1>{{message}}</h1>
-  <p>This page is rendered by Pegasus Pages.</p>
-</body>
-</html>
+<section class="hero">
+  <h1>{{title}}</h1>
+  <p>{{description}}</p>
+</section>
+
+<div class="card-grid">
+  <div class="card">
+    <span class="card-icon">&#128193;</span>
+    <h3>File-based Routing</h3>
+    <p>Drop a page.html in a folder and it becomes a route. No manual registration needed.</p>
+  </div>
+  <div class="card">
+    <span class="card-icon">&#127912;</span>
+    <h3>Template Engine</h3>
+    <p>Expressions, conditionals, loops, partials and filters with automatic HTML encoding.</p>
+  </div>
+  <div class="card">
+    <span class="card-icon">&#9889;</span>
+    <h3>HTMX Ready</h3>
+    <p>Partial page swaps out of the box. Layouts are skipped on HX-Request for seamless SPA-like navigation.</p>
+  </div>
+  <div class="card">
+    <span class="card-icon">&#128256;</span>
+    <h3>Nested Layouts</h3>
+    <p>Compose pages with multiple layout levels. Inner layouts wrap content before outer ones.</p>
+  </div>
+  <div class="card">
+    <span class="card-icon">&#128295;</span>
+    <h3>Reusable Components</h3>
+    <p>Build custom HTML components with slots and attributes. Encapsulate UI patterns once, use everywhere.</p>
+  </div>
+  <div class="card">
+    <span class="card-icon">&#128274;</span>
+    <h3>Security Built-in</h3>
+    <p>CSRF protection, secure headers, Content-Security-Policy and constant-time token validation by default.</p>
+  </div>
+</div>

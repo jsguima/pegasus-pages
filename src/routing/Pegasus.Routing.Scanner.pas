@@ -20,6 +20,11 @@ type
     function Scan(const PagesDir: string): TArray<TScannedPage>;
   end;
 
+  function Scanner(): IScanner;
+
+implementation
+
+type
   TScanner = class(TInterfacedObject, IScanner)
   private
     function BuildRoutes(const PagesDir, FilePath: string): TArray<string>;
@@ -30,18 +35,17 @@ type
     function NormalizePart(const Part: string): string;
     procedure SortByParamCount(var Pages: TArray<TScannedPage>);
   public
-    class function New(): IScanner;
     function Scan(const PagesDir: string): TArray<TScannedPage>;
   end;
 
-implementation
+{ Public accessor }
 
-{ TScanner }
-
-class function TScanner.New: IScanner;
+function Scanner(): IScanner;
 begin
   Result := TScanner.Create;
 end;
+
+{ TScanner }
 
 function TScanner.Scan(const PagesDir: string): TArray<TScannedPage>;
 begin
@@ -183,6 +187,11 @@ begin
 
     Dir := TPath.GetDirectoryName(ExcludeTrailingPathDelimiter(Dir));
   end;
+
+  var RootLayout := TPath.Combine(Root, '_layout.html');
+
+  if TFile.Exists(RootLayout) then
+    Result := Result + [RootLayout];
 end;
 
 procedure TScanner.SortByParamCount(var Pages: TArray<TScannedPage>);

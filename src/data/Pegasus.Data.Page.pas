@@ -74,6 +74,7 @@ type
   end;
 
   function PageData(): IPageData;
+  function PageDataWithSlot(Source: IPageDataReader; const SlotHtml: string): IPageDataReader;
 
 implementation
 
@@ -235,6 +236,77 @@ end;
 function TPageData.GetSlot: string;
 begin
   Result := FSlot;
+end;
+
+{ TPageDataSlotDecorator }
+
+type
+  TPageDataSlotDecorator = class(TInterfacedObject, IPageDataReader)
+  private
+    FSource: IPageDataReader;
+    FSlot: string;
+  public
+    constructor Create(Source: IPageDataReader; const SlotHtml: string);
+    function Get(const Key: string): TValue;
+    function GetSlot: string;
+    function GetStream: TStream;
+    function GetStreamContentType: string;
+    function GetStreamFileName: string;
+    function Has(const Key: string): Boolean;
+    function HasStream: Boolean;
+    function IsSlotTrusted: Boolean;
+  end;
+
+constructor TPageDataSlotDecorator.Create(Source: IPageDataReader; const SlotHtml: string);
+begin
+  inherited Create;
+  FSource := Source;
+  FSlot := SlotHtml;
+end;
+
+function TPageDataSlotDecorator.Get(const Key: string): TValue;
+begin
+  Result := FSource.Get(Key);
+end;
+
+function TPageDataSlotDecorator.GetSlot: string;
+begin
+  Result := FSlot;
+end;
+
+function TPageDataSlotDecorator.GetStream: TStream;
+begin
+  Result := FSource.GetStream;
+end;
+
+function TPageDataSlotDecorator.GetStreamContentType: string;
+begin
+  Result := FSource.GetStreamContentType;
+end;
+
+function TPageDataSlotDecorator.GetStreamFileName: string;
+begin
+  Result := FSource.GetStreamFileName;
+end;
+
+function TPageDataSlotDecorator.Has(const Key: string): Boolean;
+begin
+  Result := FSource.Has(Key);
+end;
+
+function TPageDataSlotDecorator.HasStream: Boolean;
+begin
+  Result := FSource.HasStream;
+end;
+
+function TPageDataSlotDecorator.IsSlotTrusted: Boolean;
+begin
+  Result := True;
+end;
+
+function PageDataWithSlot(Source: IPageDataReader; const SlotHtml: string): IPageDataReader;
+begin
+  Result := TPageDataSlotDecorator.Create(Source, SlotHtml);
 end;
 
 end.

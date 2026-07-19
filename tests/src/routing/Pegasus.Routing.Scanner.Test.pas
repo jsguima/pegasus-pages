@@ -1,4 +1,4 @@
-unit Pegasus.Routing.Scanner.Test;
+﻿unit Pegasus.Routing.Scanner.Test;
 
 interface
 
@@ -185,7 +185,7 @@ end;
 
 procedure TScannerBasicTest.Diretorio_inexistente_deve_retornar_vazio;
 begin
-  var Pages := TScanner.New().Scan(TPath.Combine(FTempDir, 'nao_existe'));
+  var Pages := Scanner().Scan(TPath.Combine(FTempDir, 'nao_existe'));
   Assert.AreEqual(0, Length(Pages));
 end;
 
@@ -193,7 +193,7 @@ procedure TScannerBasicTest.Raiz_deve_gerar_rota_barra;
 begin
   // page.html direto na raiz = rota /
   TFile.WriteAllText(TPath.Combine(FTempDir, 'page.html'), '<p>root</p>');
-  var Pages := TScanner.New().Scan(FTempDir);
+  var Pages := Scanner().Scan(FTempDir);
   Assert.AreEqual(1, Length(Pages));
   Assert.AreEqual('/', Pages[0].Route);
 end;
@@ -201,7 +201,7 @@ end;
 procedure TScannerBasicTest.Subpasta_deve_gerar_rota_com_segmento;
 begin
   CreatePage('about');
-  var Pages := TScanner.New().Scan(FTempDir);
+  var Pages := Scanner().Scan(FTempDir);
   Assert.AreEqual(1, Length(Pages));
   Assert.AreEqual('/about', Pages[0].Route);
 end;
@@ -211,7 +211,7 @@ begin
   CreatePage('about');
   CreatePage('contact');
   CreatePage('blog');
-  var Pages := TScanner.New().Scan(FTempDir);
+  var Pages := Scanner().Scan(FTempDir);
   Assert.AreEqual(3, Length(Pages));
 end;
 
@@ -219,7 +219,7 @@ procedure TScannerBasicTest.Deve_ignorar_pasta_com_underscore;
 begin
   CreatePage('_hidden');
   CreatePage('visible');
-  var Pages := TScanner.New().Scan(FTempDir);
+  var Pages := Scanner().Scan(FTempDir);
   Assert.AreEqual(1, Length(Pages));
   Assert.AreEqual('/visible', Pages[0].Route);
 end;
@@ -241,7 +241,7 @@ end;
 procedure TScannerParamsTest.Param_com_colchetes_deve_gerar_rota_dinamica;
 begin
   CreatePage('users\[id]');
-  var Pages := TScanner.New().Scan(FTempDir);
+  var Pages := Scanner().Scan(FTempDir);
   Assert.AreEqual(1, Length(Pages));
   Assert.AreEqual('/users/:id', Pages[0].Route);
 end;
@@ -249,7 +249,7 @@ end;
 procedure TScannerParamsTest.Param_opcional_deve_gerar_duas_rotas;
 begin
   CreatePage('blog\[[page]]');
-  var Pages := TScanner.New().Scan(FTempDir);
+  var Pages := Scanner().Scan(FTempDir);
   // Deve gerar /blog e /blog/:page
   Assert.AreEqual(2, Length(Pages));
 
@@ -269,7 +269,7 @@ procedure TScannerParamsTest.Rotas_estaticas_devem_vir_antes_de_dinamicas;
 begin
   CreatePage('users\[id]');
   CreatePage('users\profile');
-  var Pages := TScanner.New().Scan(FTempDir);
+  var Pages := Scanner().Scan(FTempDir);
 
   // A rota estatica /users/profile deve vir antes de /users/:id
   Assert.AreEqual(2, Length(Pages));
@@ -294,7 +294,7 @@ end;
 procedure TScannerGroupTest.Grupo_com_parenteses_deve_ser_ignorado_na_rota;
 begin
   CreatePage('(auth)\login');
-  var Pages := TScanner.New().Scan(FTempDir);
+  var Pages := Scanner().Scan(FTempDir);
   Assert.AreEqual(1, Length(Pages));
   Assert.AreEqual('/login', Pages[0].Route);
 end;
@@ -302,7 +302,7 @@ end;
 procedure TScannerGroupTest.Grupo_nao_deve_adicionar_segmento;
 begin
   CreatePage('(admin)\dashboard');
-  var Pages := TScanner.New().Scan(FTempDir);
+  var Pages := Scanner().Scan(FTempDir);
   Assert.AreEqual(1, Length(Pages));
   Assert.AreEqual('/dashboard', Pages[0].Route);
 end;
@@ -325,7 +325,7 @@ procedure TScannerLayoutTest.Deve_coletar_layout_da_pasta_atual;
 begin
   CreatePage('dashboard');
   CreateLayout('dashboard');
-  var Pages := TScanner.New().Scan(FTempDir);
+  var Pages := Scanner().Scan(FTempDir);
   Assert.AreEqual(1, Length(Pages));
   Assert.AreEqual(1, Length(Pages[0].Layouts));
 end;
@@ -335,7 +335,7 @@ begin
   CreatePage('admin\users');
   CreateLayout('admin\users'); // layout mais proximo
   CreateLayout('admin');        // layout pai
-  var Pages := TScanner.New().Scan(FTempDir);
+  var Pages := Scanner().Scan(FTempDir);
   Assert.AreEqual(1, Length(Pages));
   Assert.AreEqual(2, Length(Pages[0].Layouts));
 end;
@@ -343,7 +343,7 @@ end;
 procedure TScannerLayoutTest.Sem_layout_deve_retornar_array_vazio;
 begin
   CreatePage('simple');
-  var Pages := TScanner.New().Scan(FTempDir);
+  var Pages := Scanner().Scan(FTempDir);
   Assert.AreEqual(1, Length(Pages));
   Assert.AreEqual(0, Length(Pages[0].Layouts));
 end;
@@ -366,7 +366,7 @@ procedure TScannerEdgeCasesTest.Rotas_duplicadas_nao_devem_ser_registradas_duas_
 begin
   // Param opcional gera 2 rotas - mas se ja existe, nao duplica
   CreatePage('blog');
-  var Pages := TScanner.New().Scan(FTempDir);
+  var Pages := Scanner().Scan(FTempDir);
   // Apenas 1 rota
   var RouteCount := 0;
   for var P in Pages do
@@ -378,7 +378,7 @@ end;
 procedure TScannerEdgeCasesTest.Nomes_com_hifen_devem_funcionar;
 begin
   CreatePage('about-us');
-  var Pages := TScanner.New().Scan(FTempDir);
+  var Pages := Scanner().Scan(FTempDir);
   Assert.AreEqual(1, Length(Pages));
   Assert.AreEqual('/about-us', Pages[0].Route);
 end;
@@ -386,7 +386,7 @@ end;
 procedure TScannerEdgeCasesTest.Profundidade_grande_deve_funcionar;
 begin
   CreatePage('a\b\c\d\e');
-  var Pages := TScanner.New().Scan(FTempDir);
+  var Pages := Scanner().Scan(FTempDir);
   Assert.AreEqual(1, Length(Pages));
   Assert.AreEqual('/a/b/c/d/e', Pages[0].Route);
 end;

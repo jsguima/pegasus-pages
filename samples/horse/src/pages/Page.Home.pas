@@ -24,8 +24,10 @@ function THomePage.OnGet(Request: IRequest): IPageResult;
 begin
   Result := PageResult
     .Page
-      .Add('title', 'Welcome')
-      .Add('message', 'Hello from Pegasus Pages!')
+      .Add('header', 'Home')
+      .Add('title', 'Server-side pages for Delphi')
+      .Add('description', 'A lightweight, file-based page framework with template engine, layouts, components, and HTMX support.')
+      .Add('HX-Title', 'Home - Pegasus Pages')
     .Render;
 end;
 

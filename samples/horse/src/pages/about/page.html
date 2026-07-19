@@ -1,0 +1,39 @@
+<section class="page-section">
+  <span class="badge">About</span>
+  <h2>What is Pegasus Pages?</h2>
+  <p>
+    Pegasus Pages is a server-side page framework for Delphi inspired by ASP.NET Razor Pages and Next.js.
+    It brings file-based routing, a template engine with automatic encoding, nested layouts, and reusable components
+    to the Delphi ecosystem.
+  </p>
+</section>
+
+<section class="page-section">
+  <h2>How it works</h2>
+  <p>
+    Drop a <code>page.html</code> file in a folder and it becomes a route. Create a PageModel class to handle
+    GET/POST logic. Use layouts for shared structure and components for reusable UI blocks.
+  </p>
+  <div class="code-block">
+pages/<br>
+&nbsp;&nbsp;_layout.html&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6c7086">// root layout with html/head</span><br>
+&nbsp;&nbsp;page.html&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6c7086">// route: /</span><br>
+&nbsp;&nbsp;about/<br>
+&nbsp;&nbsp;&nbsp;&nbsp;page.html&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6c7086">// route: /about</span><br>
+&nbsp;&nbsp;blog/[id]/<br>
+&nbsp;&nbsp;&nbsp;&nbsp;page.html&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6c7086">// route: /blog/:id</span>
+  </div>
+</section>
+
+<section class="page-section">
+  <h2>Template Syntax</h2>
+  <p>Simple, familiar expressions with safe defaults:</p>
+  <div class="code-block">
+&lt;h1&gt;&#123;&#123;raw title&#125;&#125;&lt;/h1&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6c7086">// raw output (trusted)</span><br>
+&lt;p&gt;&#123;&#123;message&#125;&#125;&lt;/p&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6c7086">// html-encoded</span><br>
+&#123;&#123;if logged&#125;&#125;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6c7086">// conditionals</span><br>
+&#123;&#123;for item in items&#125;&#125;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6c7086">// loops</span><br>
+&#123;&#123;partial _header&#125;&#125;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#6c7086">// partials</span><br>
+&#123;&#123;price | currency:'prefix'&#125;&#125;&nbsp;&nbsp;<span style="color:#6c7086">// filters</span>
+  </div>
+</section>

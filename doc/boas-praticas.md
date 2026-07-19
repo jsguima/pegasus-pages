@@ -67,3 +67,36 @@ var Mes := StrToIntDef(Parts[0], 1);
 
 var Ano := StrToIntDef(Parts[1], 2026);
 ```
+
+
+## Encoding (UTF-8 com BOM)
+
+### Regra geral
+
+Todo arquivo `.pas` criado ou editado deve ser convertido para UTF-8 com BOM. Porém, o script de conversão deve ser aplicado **apenas nos arquivos efetivamente modificados**, nunca em batch sobre todo o diretório.
+
+### Por que não rodar em batch
+
+Rodar o script de BOM em todos os `.pas` de `src/` e `tests/` altera o conteúdo binário de arquivos que não foram tocados, gerando ruído no `git diff` e potencialmente quebrando blame/history sem necessidade.
+
+### Como aplicar corretamente
+
+Listar explicitamente apenas os arquivos editados na sessão:
+
+```python
+files = [
+    r'src\Pegasus.Pages.pas',
+    r'src\routing\Pegasus.Routing.Scanner.pas',
+    # ... apenas os que foram editados
+]
+
+for p in files:
+    c = open(p, 'rb').read()
+    open(p, 'wb').write(b'\xef\xbb\xbf' + c.replace(b'\xef\xbb\xbf', b''))
+```
+
+Ou rodar o one-liner da convenção do projeto passando cada arquivo individualmente.
+
+### Nunca converter
+
+Arquivos em `modules/` nunca devem ser convertidos (são dependências externas).
