@@ -16,7 +16,8 @@ type
   TMiddlewares = class
   public
     class function Csrf: TMiddleware;
-    class function SecureHeaders(const ExtraFontSrc: TArray<string> = nil): TMiddleware;
+    class function SecureHeaders(const ExtraFontSrc: TArray<string> = nil;
+      const ExtraScriptSrc: TArray<string> = nil): TMiddleware;
     class function Timeout(TimeoutMs: Integer = 5000): TMiddleware;
   end;
 
@@ -127,21 +128,33 @@ begin
     end;
 end;
 
-class function TMiddlewares.SecureHeaders(const ExtraFontSrc: TArray<string>): TMiddleware;
+class function TMiddlewares.SecureHeaders(const ExtraFontSrc: TArray<string>;
+  const ExtraScriptSrc: TArray<string>): TMiddleware;
+var
+  FontSrc, ScriptSrc: string;
 begin
+  FontSrc := '''self''';
+
+  if ExtraFontSrc <> nil then
+    for var Src in ExtraFontSrc do
+      FontSrc := FontSrc + ' ' + Src;
+
+  ScriptSrc := '''self''';
+
+  if ExtraScriptSrc <> nil then
+    for var Src in ExtraScriptSrc do
+      ScriptSrc := ScriptSrc + ' ' + Src;
+
+  var CspValue := 'default-src ''self''; script-src ' + ScriptSrc +
+    '; style-src ''self'' ''unsafe-inline''; ' +
+    'img-src ''self'' data:; font-src ' + FontSrc + '; frame-ancestors ''none''';
+
   Result :=
     procedure(Req: IRequest; Res: IResponse; Next: TMiddlewareProc)
     begin
-      var FontSrc := '''self''';
-
-      for var Src in ExtraFontSrc do
-        FontSrc := FontSrc + ' ' + Src;
-
       Res.AddHeader('X-Content-Type-Options', 'nosniff');
       Res.AddHeader('X-Frame-Options', 'DENY');
-      Res.AddHeader('Content-Security-Policy',
-        'default-src ''self''; script-src ''self''; style-src ''self'' ''unsafe-inline''; ' +
-        'img-src ''self'' data:; font-src ' + FontSrc + '; frame-ancestors ''none''');
+      Res.AddHeader('Content-Security-Policy', CspValue);
 
       if _Production then
         Res.AddHeader('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');

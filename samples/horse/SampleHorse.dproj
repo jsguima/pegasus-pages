@@ -71,6 +71,8 @@
         </DelphiCompile>
         <DCCReference Include="src\adapter\Pegasus.Adapters.Horse.pas"/>
         <DCCReference Include="src\pages\Page.Home.pas"/>
+        <DCCReference Include="src\pages\about\Page.About.pas"/>
+        <DCCReference Include="src\pages\contact\Page.Contact.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

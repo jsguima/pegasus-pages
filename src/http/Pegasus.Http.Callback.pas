@@ -10,7 +10,7 @@ type
   TPageVerb = (pvGet, pvPost, pvPut, pvDelete);
   THandler = reference to function(Req: IRequest): IResponse;
   TRouteCallback = reference to procedure(Verb: TPageVerb; const Route: string; Handler: THandler);
-  TStaticCallback = reference to procedure(const Route, FilePath: string);
+  TStaticCallback = reference to procedure(const Route, FilePath, ContentType: string);
 
 implementation
 
